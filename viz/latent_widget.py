@@ -10,6 +10,7 @@ import numpy as np
 import imgui
 import dnnlib
 from gui_utils import imgui_utils
+from . import imgui_power
 
 #----------------------------------------------------------------------------
 
@@ -53,8 +54,7 @@ class LatentWidget:
             _clicked, self.latent.anim = imgui.checkbox('Anim', self.latent.anim)
             imgui.same_line(round(viz.font_size * 27.7))
             with imgui_utils.item_width(-1 - viz.button_w * 2 - viz.spacing * 2), imgui_utils.grayed_out(not self.latent.anim):
-                changed, speed = imgui.slider_float('##speed', self.latent.speed, -5, 5, format='Speed %.3f', flags=imgui.SLIDER_FLAGS_LOGARITHMIC)
-                # power=3 AssertionError: power parameter obsoleted in ImGui 1.78, use imgui.SLIDER_FLAGS_LOGARITHMIC instead
+                changed, speed = imgui.slider_float('##speed', self.latent.speed, -5, 5, format='Speed %.3f', **imgui_power(3))
                 if changed:
                     self.latent.speed = speed
             imgui.same_line()

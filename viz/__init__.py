@@ -7,3 +7,13 @@
 # license agreement from NVIDIA CORPORATION is strictly prohibited.
 
 # empty
+import imgui
+
+def imgui_power(power):
+    """ imgui forward backward compatibility
+        v 1.4 # AttributeError: module 'imgui' has no attribute 'SLIDER_FLAGS_LOGARITHMIC'
+        v 2.0 # AssertionError: power parameter obsoleted in ImGui 1.78, use imgui.SLIDER_FLAGS_LOGARITHMIC instead
+    """
+    if imgui.__version__ >= "2.0":
+        return {"flags": imgui.SLIDER_FLAGS_LOGARITHMIC}
+    return {"power": power}

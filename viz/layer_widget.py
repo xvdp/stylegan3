@@ -8,6 +8,7 @@
 
 import imgui
 from gui_utils import imgui_utils
+from . import imgui_power
 
 #----------------------------------------------------------------------------
 
@@ -167,8 +168,7 @@ class LayerWidget:
             # FFT beta.
             with imgui_utils.grayed_out(not self.fft_show):
                 with imgui_utils.item_width(-1 - viz.button_w - viz.spacing):
-                    _changed, self.fft_beta = imgui.slider_float('##fft_beta', self.fft_beta, min_value=0, max_value=50, format='Kaiser beta %.2f', flags=imgui.SLIDER_FLAGS_LOGARITHMIC)
-                    # , power=2.63) AssertionError: power parameter obsoleted in ImGui 1.78, use imgui.SLIDER_FLAGS_LOGARITHMIC instead
+                    _changed, self.fft_beta = imgui.slider_float('##fft_beta', self.fft_beta, min_value=0, max_value=50, format='Kaiser beta %.2f', **imgui_power(2.63))
                 imgui.same_line()
                 if imgui_utils.button('Reset##fft_beta', width=-1, enabled=(self.fft_beta != 8)):
                     self.fft_beta = 8
