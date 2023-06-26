@@ -15,7 +15,7 @@ import imgui
 import numpy as np
 from gui_utils import imgui_utils
 
-from . import renderer
+from . import renderer, imgui_set_scroll_here
 
 #----------------------------------------------------------------------------
 
@@ -118,8 +118,8 @@ class PickleWidget:
                     with imgui_utils.grayed_out():
                         imgui.menu_item('No results found')
             recurse(self.search_dirs)
-            if self.browse_refocus:
-                imgui.set_scroll_here()
+            if self.browse_refocus: 
+                imgui_set_scroll_here()
                 viz.skip_frame() # Focus will change on next frame.
                 self.browse_refocus = False
             imgui.end_popup()

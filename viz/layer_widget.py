@@ -8,7 +8,7 @@
 
 import imgui
 from gui_utils import imgui_utils
-from . import imgui_power
+from . import imgui_power, imgui_set_scroll_here
 
 #----------------------------------------------------------------------------
 
@@ -65,9 +65,7 @@ class LayerWidget:
                 if selected:
                     self.cur_layer = layer.name
                     if self.refocus:
-                        # imgui 2.0 deprecates set_scroll_here # https://pyimgui.readthedocs.io/en/latest/reference/imgui.core.html
-                        imgui.core.set_item_default_focus()
-                        # imgui.set_scroll_here()
+                        imgui_set_scroll_here()
                         viz.skip_frame() # Focus will change on next frame.
                         self.refocus = False
                 imgui.same_line(width - viz.font_size * 13)

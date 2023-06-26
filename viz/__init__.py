@@ -17,3 +17,12 @@ def imgui_power(power):
     if imgui.__version__ >= "2.0":
         return {"flags": imgui.SLIDER_FLAGS_LOGARITHMIC}
     return {"power": power}
+def imgui_set_scroll_here():
+    """ imgui forward backward compatibility
+        v 2.0 # imgui 2.0 deprecates set_scroll_here
+        # https://pyimgui.readthedocs.io/en/latest/reference/imgui.core.html
+    """
+    if imgui.__version__ >= "2.0":
+        imgui.core.set_item_default_focus()
+    else:
+        imgui.set_scroll_here()
