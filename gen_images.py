@@ -20,6 +20,7 @@ import torch
 
 import legacy
 
+
 #----------------------------------------------------------------------------
 
 def parse_range(s: Union[str, List]) -> List[int]:
@@ -101,6 +102,8 @@ def generate_images(
     python gen_images.py --outdir=out --trunc=0.7 --seeds=600-605 \\
         --network=https://api.ngc.nvidia.com/v2/models/nvidia/research/stylegan3/versions/1/files/stylegan3-t-metfacesu-1024x1024.pkl
     """
+    network_pkl = resolvepath(network_pkl)
+
 
     print('Loading networks from "%s"...' % network_pkl)
     device = torch.device('cuda')
@@ -134,12 +137,49 @@ def generate_images(
 
         img = G(z, label, truncation_psi=truncation_psi, noise_mode=noise_mode)
         img = (img.permute(0, 2, 3, 1) * 127.5 + 128).clamp(0, 255).to(torch.uint8)
-        PIL.Image.fromarray(img[0].cpu().numpy(), 'RGB').save(f'{outdir}/seed{seed:04d}.png')
+        name = makename(outdir, seed, network_pkl, class_idx, translate, rotate, noise_mode, truncation_psi)
+        PIL.Image.fromarray(img[0].cpu().numpy(), 'RGB').save(name)
+
+
+def makename(outdir, seed, network_pkl, class_idx, translate, rotate, noise_mode, truncation_psi):
+    """ and parameters to saved images for comparison
+    """
+    name = os.path.splitext(os.path.basename(network_pkl))[0]
+    if noise_mode != "const":
+        name += f"_n{noise_mode}"
+    if class_idx is not None:
+        name += f"_cls{class_idx}"
+    if translate != (0,0):
+        name += f"_t{translate}"
+    if rotate != 0:
+        name += f"_r{rotate}"
+    if truncation_psi != 1:
+        name += f"_trpsi{truncation_psi}"
+    return f'{outdir}/{name}_seed{seed:04d}.png'
+
+def resolvepath(network_pkl):
+    """ parse from pkl name
+    """
+    sg = lambda net, version: f'https://api.ngc.nvidia.com/v2/models/nvidia/research/stylegan{version}/versions/1/files/{net}'
+    if 'https' not in network_pkl and not os.path.isfile(network_pkl):
+        network_pkl = os.path.basename(network_pkl)
+        _network_pkl = os.path.join(dnnlib.make_cache_dir_path(), 'downloads', network_pkl)
+        if os.path.isfile(_network_pkl):
+            network_pkl = _network_pkl
+        else:
+            version = 3 if 'stylegan3' in network_pkl else 2
+            network_pkl  = sg(network_pkl, version)
+    return network_pkl
 
 
 #----------------------------------------------------------------------------
 
 if __name__ == "__main__":
     generate_images() # pylint: disable=no-value-for-parameter
+    """
+    stylegan3-r-afhqv2-512x512.pkl:     class, noise_mode:   no effect
+    stylegan3-t-ffhq-1024x1024.pkl:     class, noise_mode:   no effect
+    stylegan3-t-ffhqu-1024x1024.pkl
+    """
 
 #----------------------------------------------------------------------------
