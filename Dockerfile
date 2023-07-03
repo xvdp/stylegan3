@@ -29,15 +29,12 @@ SHELL ["/bin/bash", "-c"]
 
 USER root
 RUN apt-get -yqq update
-RUN apt-get install -yq --no-install-recommends libglvnd0 libgl1 libglx0 libegl1 libgles2 libglvnd-dev
-RUN apt-get install -yq --no-install-recommends libgl1-mesa-dev libegl1-mesa-dev libgles2-mesa-dev
-RUN apt-get install -yq --no-install-recommends zlib1g-dev libjpeg-dev libwebp-dev
-RUN apt-get autoremove -y && apt-get clean -y
-
+RUN apt-get install -yq --no-install-recommends libglvnd0 libgl1 libglx0 libegl1 libgles2 libglvnd-dev \
+    libgl1-mesa-dev libegl1-mesa-dev libgles2-mesa-dev zlib1g-dev libjpeg-dev libwebp-dev \
+    && apt-get autoremove -y && apt-get clean -y
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
-
 
 RUN pip install --no-cache-dir imageio imageio-ffmpeg==0.4.4 pyspng==0.1.0 glfw imgui pyopengl
 
