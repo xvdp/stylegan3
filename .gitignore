@@ -1,2 +1,6 @@
 __pycache__/
 out/
+.cache/
+.local/
+.bash_history
+.python_history
