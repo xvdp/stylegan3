@@ -32,10 +32,10 @@
 ## build
 # docker build --tag stylegan3 .
 
-## to run as bash, optionally generates images
+## to run as bash, supports visualizer.py or image generation
 # ./dockerrun.sh
 
-## to open visualizer
+## to open visualizer.py
 # ./dockerrun.sh python visualizer.py
 
 # to generate images as per README example
@@ -50,7 +50,6 @@
 # -e DISPLAY=unix$DISPLAY                       creates DISPLAY env        
 # -v /tmp/.docker.xauth:/tmp/.docker.xauth:rw -v /tmp/.X11-unix:/tmp/.X11-unix  -e XAUTHORITY=/tmp/.docker.xauth  shares current X11 xauth and sets environment
 # -v /dev:/dev  shares devices folder with docker to alow libGL load device info
-
 
 
 FROM nvcr.io/nvidia/pytorch:21.08-py3
@@ -70,6 +69,5 @@ RUN pip install --no-cache-dir imageio imageio-ffmpeg==0.4.4 pyspng==0.1.0 glfw 
 
 WORKDIR /workspace
 
-# CMD [ /bin/bash ]
 RUN (printf '#!/bin/bash\nexec \"$@\"\n' >> /entry.sh) && chmod a+x /entry.sh
 ENTRYPOINT ["/entry.sh"]
