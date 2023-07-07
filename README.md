@@ -85,6 +85,8 @@ Outputs from the above commands are placed under `out/*.png`, controlled by `--o
 
 **Docker**: You can run the above curated image example using Docker as follows:
 
+***modifications @xvdp to enable running GL viewer in local repository, see info in Dockerfile and dockerrun.sh***
+
 ```.bash
 # Build the stylegan3:latest image
 docker build --tag stylegan3 .

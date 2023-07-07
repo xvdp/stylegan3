@@ -1,0 +1,31 @@
+#!/bin/bash
+# to run without thinking about how to share xauth and display
+# usages:
+
+## to run as bash, optionally generates images
+# ./dockerrun.sh
+
+## to open visualizer
+# ./dockerrun.sh python visualizer.py
+
+# to generate images as per README example
+# ./dockerrun.sh gen_images.py --outdir=out --trunc=1 --seeds=2 \
+#         --network=https://api.ngc.nvidia.com/v2/models/nvidia/research/stylegan3/versions/1/files/stylegan3-r-afhqv2-512x512.pkl
+
+
+## args added to share local display
+# -e DISPLAY=unix$DISPLAY    
+# -v /tmp/.docker.xauth:/tmp/.docker.xauth:rw -v /tmp/.X11-unix:/tmp/.X11-unix  -e XAUTHORITY=/tmp/.docker.xauth  # shares X11 xauth and sets environment
+# -v /dev:/dev  #       shares devices folder with docker to alow libGL load device info
+
+if [[ ($# -gt 1 && $2 == "visualizer.py") || $# == 0 ]]; then
+    if [ $# -gt 0 ]; then
+        args="$@"
+    else
+        args=/bin/bash
+    fi
+    touch /tmp/.docker.xauth && xauth nlist $DISPLAY | sed -e 's/^..../ffff/' | xauth -f /tmp/.docker.xauth nmerge -
+    docker run --gpus all -it --rm --user $(id -u):$(id -g) -e DISPLAY=unix$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v /tmp/.docker.xauth:/tmp/.docker.xauth:rw -e XAUTHORITY=/tmp/.docker.xauth -v /dev:/dev -v `pwd`:/scratch --workdir /scratch -e HOME=/scratch stylegan3 $args
+else
+    docker run --gpus all -it --rm --user $(id -u):$(id -g) -v `pwd`:/scratch --workdir /scratch -e HOME=/scratch stylegan3 $@
+fi
