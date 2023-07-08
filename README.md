@@ -1,4 +1,5 @@
 ## Alias-Free Generative Adversarial Networks (StyleGAN3)<br><sub>Official PyTorch implementation of the NeurIPS 2021 paper</sub>
+### @xvdp modified Dockerfile to run GL over docker on localhost
 
 ![Teaser image](./docs/stylegan3-teaser-1920x1006.png)
 
@@ -84,8 +85,7 @@ python gen_video.py --output=lerp.mp4 --trunc=1 --seeds=0-31 --grid=4x2 \
 Outputs from the above commands are placed under `out/*.png`, controlled by `--outdir`. Downloaded network pickles are cached under `$HOME/.cache/dnnlib`, which can be overridden by setting the `DNNLIB_CACHE_DIR` environment variable. The default PyTorch extension build directory is `$HOME/.cache/torch_extensions`, which can be overridden by setting `TORCH_EXTENSIONS_DIR`.
 
 **Docker**: You can run the above curated image example using Docker as follows:
-
-***modifications @xvdp to enable running GL viewer in local repository, see info in Dockerfile and dockerrun.sh***
+### @xvdp see Dockerfile for changes to this info to enable running GL code on docker
 
 ```.bash
 # Build the stylegan3:latest image
