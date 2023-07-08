@@ -18,6 +18,8 @@
 # -v /tmp/.docker.xauth:/tmp/.docker.xauth:rw -v /tmp/.X11-unix:/tmp/.X11-unix  -e XAUTHORITY=/tmp/.docker.xauth  # shares X11 xauth and sets environment
 # -v /dev:/dev  #       shares devices folder with docker to alow libGL load device info
 
+TAG=stylegan3_user
+
 if [[ ($# -gt 1 && $2 == "visualizer.py") || $# == 0 ]]; then
     if [ $# -gt 0 ]; then
         args="$@"
@@ -25,7 +27,10 @@ if [[ ($# -gt 1 && $2 == "visualizer.py") || $# == 0 ]]; then
         args=/bin/bash
     fi
     touch /tmp/.docker.xauth && xauth nlist $DISPLAY | sed -e 's/^..../ffff/' | xauth -f /tmp/.docker.xauth nmerge -
-    docker run --gpus all -it --rm --user $(id -u):$(id -g) -e DISPLAY=unix$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v /tmp/.docker.xauth:/tmp/.docker.xauth:rw -e XAUTHORITY=/tmp/.docker.xauth -v /dev:/dev -v `pwd`:/scratch --workdir /scratch -e HOME=/scratch stylegan3 $args
+
+    echo "docker run --gpus all -it --rm --user $(id -u):$(id -g) -e DISPLAY=unix${DISPLAY} -v /tmp/.X11-unix:/tmp/.X11-unix -v /tmp/.docker.xauth:/tmp/.docker.xauth:rw -e XAUTHORITY=/tmp/.docker.xauth -v /dev:/dev -v `pwd`:/scratch --workdir /scratch -e HOME=/scratch $TAG ${args}"
+
+    docker run --gpus all -it --rm --user $(id -u):$(id -g) -e DISPLAY=unix$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v /tmp/.docker.xauth:/tmp/.docker.xauth:rw -e XAUTHORITY=/tmp/.docker.xauth -v /dev:/dev -v `pwd`:/scratch --workdir /scratch -e HOME=/scratch $TAG $args
 else
-    docker run --gpus all -it --rm --user $(id -u):$(id -g) -v `pwd`:/scratch --workdir /scratch -e HOME=/scratch stylegan3 $@
+    docker run --gpus all -it --rm --user $(id -u):$(id -g) -v `pwd`:/scratch --workdir /scratch -e HOME=/scratch $TAG $@
 fi
